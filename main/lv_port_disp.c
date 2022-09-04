@@ -140,20 +140,20 @@ void lv_port_disp_init(void)
     static lv_color_t buf_1[LCD_H_RES * 10];                          /*A buffer for 10 rows*/
     lv_disp_draw_buf_init(&draw_buf_dsc_1, buf_1, NULL, LCD_H_RES * 10);   /*Initialize the display buffer*/
 
-    if(false) {
+    #if 0
     /* Example for 2) */
     static lv_disp_draw_buf_t draw_buf_dsc_2;
     static lv_color_t buf_2_1[LCD_H_RES * 10];                        /*A buffer for 10 rows*/
     static lv_color_t buf_2_2[LCD_H_RES * 10];                        /*An other buffer for 10 rows*/
     lv_disp_draw_buf_init(&draw_buf_dsc_2, buf_2_1, buf_2_2, LCD_H_RES * 10);   /*Initialize the display buffer*/
-    }
-    if(false) {
+    #endif
+    #if 0
     /* Example for 3) also set disp_drv.full_refresh = 1 below*/
     static lv_disp_draw_buf_t draw_buf_dsc_3;
     static lv_color_t buf_3_1[LCD_H_RES * LCD_V_RES];            /*A screen sized buffer*/
     static lv_color_t buf_3_2[LCD_H_RES * LCD_V_RES];            /*Another screen sized buffer*/
     lv_disp_draw_buf_init(&draw_buf_dsc_3, buf_3_1, buf_3_2, LCD_V_RES * LV_VER_RES_MAX);   /*Initialize the display buffer*/
-    }
+    #endif
     /*-----------------------------------
      * Register the display in LVGL
      *----------------------------------*/
