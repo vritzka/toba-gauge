@@ -16,6 +16,7 @@
 #include "esp_err.h"
 #include "esp_log.h"
 #include "lvgl.h"
+#include "gt911.h"
 
 static const char *TAG = "example";
 
@@ -224,6 +225,21 @@ void app_main(void)
     esp_timer_handle_t lvgl_tick_timer = NULL;
     ESP_ERROR_CHECK(esp_timer_create(&lvgl_tick_timer_args, &lvgl_tick_timer));
     ESP_ERROR_CHECK(esp_timer_start_periodic(lvgl_tick_timer, EXAMPLE_LVGL_TICK_PERIOD_MS * 1000));
+
+
+// Touch
+    gt911_init(GT911_I2C_SLAVE_ADDR);
+
+    static lv_indev_drv_t indev_drv;
+    lv_indev_drv_init(&indev_drv);      /*Basic initialization*/
+    indev_drv.type = LV_INDEV_TYPE_POINTER;                 /*See below.*/
+    indev_drv.read_cb = gt911_read;              /*See below.*/
+    /*Register the driver in LVGL and save the created input device object*/
+    lv_indev_t * my_indev = lv_indev_drv_register(&indev_drv);
+
+
+
+
 
     ESP_LOGI(TAG, "Display LVGL Scatter Chart");
     example_lvgl_demo_ui(disp);
