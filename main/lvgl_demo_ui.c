@@ -10,27 +10,35 @@
 
 
 
-static void slider_event_cb(lv_event_t * e);
-static lv_obj_t * slider_label;
-
-
-
-
 /**
  * A meter with multiple arcs
  */
 void lv_example_meter_2(void)
 {
-     /*Create a slider in the center of the display*/
-    lv_obj_t * slider = lv_slider_create(lv_scr_act());
-    lv_obj_center(slider);
-    lv_obj_add_event_cb(slider, slider_event_cb, LV_EVENT_VALUE_CHANGED, NULL);
 
-    /*Create a label below the slider*/
-    slider_label = lv_label_create(lv_scr_act());
-    lv_label_set_text(slider_label, "0%");
 
-    lv_obj_align_to(slider_label, slider, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
+ static lv_style_t style_shadow;
+    lv_style_init(&style_shadow);
+    lv_style_set_shadow_width(&style_shadow, 10);
+    lv_style_set_shadow_spread(&style_shadow, 5);
+    lv_style_set_shadow_color(&style_shadow, lv_palette_main(LV_PALETTE_GREEN));
+
+    lv_obj_t * obj2;
+    obj2 = lv_obj_create(lv_scr_act());
+    lv_obj_set_size(obj2, 794, 474);
+    lv_obj_add_style(obj2, &style_shadow, 0);
+    lv_obj_align(obj2, LV_ALIGN_CENTER, 0, 0);
+
+
+    lv_obj_t * cw;
+
+    cw = lv_colorwheel_create(lv_scr_act(), true);
+    lv_obj_set_size(cw, 400, 400);
+    lv_obj_center(cw);
+
+
+    
+    
 }
 
 
@@ -41,14 +49,5 @@ void example_lvgl_demo_ui(lv_disp_t *disp)
     lv_example_meter_2();
     
     
-}
-
-static void slider_event_cb(lv_event_t * e)
-{
-    lv_obj_t * slider = lv_event_get_target(e);
-    char buf[8];
-    lv_snprintf(buf, sizeof(buf), "%d%%", (int)lv_slider_get_value(slider));
-    lv_label_set_text(slider_label, buf);
-    lv_obj_align_to(slider_label, slider, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
 }
 

@@ -17,6 +17,7 @@
 #include "esp_log.h"
 #include "lvgl.h"
 #include "gt911.h"
+#include "i2c_manager.h"
 
 static const char *TAG = "example";
 
@@ -54,6 +55,8 @@ static const char *TAG = "example";
 #define EXAMPLE_LCD_V_RES              480
 
 #define EXAMPLE_LVGL_TICK_PERIOD_MS    2
+
+
 
 // we use two semaphores to sync the VSYNC event and the LVGL task, to avoid potential tearing effect
 #if CONFIG_EXAMPLE_AVOID_TEAR_EFFECT_WITH_SEM
@@ -96,8 +99,35 @@ static void example_increase_lvgl_tick(void *arg)
     lv_tick_inc(EXAMPLE_LVGL_TICK_PERIOD_MS);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        
 void app_main(void)
 {
+    
+    
+
+
+
+
+
+    
+    
+    
     static lv_disp_draw_buf_t disp_buf; // contains internal graphic buffer(s) called draw buffer(s)
     static lv_disp_drv_t disp_drv;      // contains callback functions
 
@@ -122,10 +152,8 @@ void app_main(void)
     esp_lcd_panel_handle_t panel_handle = NULL;
     esp_lcd_rgb_panel_config_t panel_config = {
         .data_width = 16, // RGB565 in parallel mode, thus 16bit in width
+        .bits_per_pixel = 16,
         .psram_trans_align = 64,
-#if CONFIG_EXAMPLE_USE_BOUNCE_BUFFER
-        .bounce_buffer_size_px = 10 * EXAMPLE_LCD_H_RES,
-#endif
         .clk_src = LCD_CLK_SRC_DEFAULT,
         .disp_gpio_num = EXAMPLE_PIN_NUM_DISP_EN,
         .pclk_gpio_num = EXAMPLE_PIN_NUM_PCLK,
@@ -154,19 +182,20 @@ void app_main(void)
             .pclk_hz = EXAMPLE_LCD_PIXEL_CLOCK_HZ,
             .h_res = EXAMPLE_LCD_H_RES,
             .v_res = EXAMPLE_LCD_V_RES,
+            
             // The following parameters should refer to LCD spec
-            .hsync_back_porch = 30, //space to the right
+            .hsync_back_porch = 46, //space to the right
             .hsync_front_porch = 210,
-            .hsync_pulse_width = 15, //Space on top
-            .vsync_back_porch = 13,
-            .vsync_front_porch = 22,
-            .vsync_pulse_width = 10,
+            .hsync_pulse_width = 1, 
+            
+            .vsync_back_porch = 23,
+            .vsync_front_porch = 147,
+            .vsync_pulse_width = 1,
+            
             .flags.pclk_active_neg = true,
         },
         .flags.fb_in_psram = true, // allocate frame buffer in PSRAM
-#if CONFIG_EXAMPLE_DOUBLE_FB
-        .flags.double_fb = true,   // allocate double frame buffer
-#endif // CONFIG_EXAMPLE_DOUBLE_FB
+
     };
     ESP_ERROR_CHECK(esp_lcd_new_rgb_panel(&panel_config, &panel_handle));
 
@@ -189,20 +218,15 @@ void app_main(void)
     lv_init();
     void *buf1 = NULL;
     void *buf2 = NULL;
-#if CONFIG_EXAMPLE_DOUBLE_FB
-    ESP_LOGI(TAG, "Use frame buffers as LVGL draw buffers");
-    ESP_ERROR_CHECK(esp_lcd_rgb_panel_get_frame_buffer(panel_handle, 2, &buf1, &buf2));
-    // initialize LVGL draw buffers
-    lv_disp_draw_buf_init(&disp_buf, buf1, buf2, EXAMPLE_LCD_H_RES * EXAMPLE_LCD_V_RES);
-#else
+
     ESP_LOGI(TAG, "Allocate separate LVGL draw buffers from PSRAM");
-    buf1 = heap_caps_malloc(EXAMPLE_LCD_H_RES * 100 * sizeof(lv_color_t), MALLOC_CAP_SPIRAM);
+    buf1 = heap_caps_malloc(EXAMPLE_LCD_H_RES * 200 * sizeof(lv_color_t), MALLOC_CAP_SPIRAM);
     assert(buf1);
-    buf2 = heap_caps_malloc(EXAMPLE_LCD_H_RES * 100 * sizeof(lv_color_t), MALLOC_CAP_SPIRAM);
+    buf2 = heap_caps_malloc(EXAMPLE_LCD_H_RES * 200 * sizeof(lv_color_t), MALLOC_CAP_SPIRAM);
     assert(buf2);
     // initialize LVGL draw buffers
-    lv_disp_draw_buf_init(&disp_buf, buf1, buf2, EXAMPLE_LCD_H_RES * 100);
-#endif // CONFIG_EXAMPLE_DOUBLE_FB
+    lv_disp_draw_buf_init(&disp_buf, buf1, buf2, EXAMPLE_LCD_H_RES * 200);
+//#endif // CONFIG_EXAMPLE_DOUBLE_FB
 
     ESP_LOGI(TAG, "Register display driver to LVGL");
     lv_disp_drv_init(&disp_drv);
@@ -227,21 +251,22 @@ void app_main(void)
     ESP_ERROR_CHECK(esp_timer_start_periodic(lvgl_tick_timer, EXAMPLE_LVGL_TICK_PERIOD_MS * 1000));
 
 
+
+
 // Touch
     gt911_init(GT911_I2C_SLAVE_ADDR);
 
     static lv_indev_drv_t indev_drv;
-    lv_indev_drv_init(&indev_drv);      /*Basic initialization*/
-    indev_drv.type = LV_INDEV_TYPE_POINTER;                 /*See below.*/
-    indev_drv.read_cb = gt911_read;              /*See below.*/
+    lv_indev_drv_init(&indev_drv);     
+    indev_drv.type = LV_INDEV_TYPE_POINTER;                
+    indev_drv.read_cb = gt911_read;             
     /*Register the driver in LVGL and save the created input device object*/
     lv_indev_t * my_indev = lv_indev_drv_register(&indev_drv);
+    
+    
 
 
-
-
-
-    ESP_LOGI(TAG, "Display LVGL Scatter Chart");
+    ESP_LOGI(TAG, "Display LVGL");
     example_lvgl_demo_ui(disp);
 
     while (1) {
