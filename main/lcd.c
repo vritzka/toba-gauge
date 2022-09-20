@@ -263,7 +263,6 @@ void app_main(void)
     /*Register the driver in LVGL and save the created input device object*/
     lv_indev_t * my_indev = lv_indev_drv_register(&indev_drv);
     
-    
 
 
     ESP_LOGI(TAG, "Display LVGL");
