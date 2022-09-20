@@ -141,25 +141,29 @@ void gt911_init(uint8_t dev_addr) {
   * @param  data: Store data here
   * @retval Always false
   */
-bool gt911_read(lv_indev_drv_t *drv, lv_indev_data_t *data) {
+bool gt911_read(lv_indev_drv_t *drv, lv_indev_data_t *data) {\
+    
     uint8_t touch_pnt_cnt;        // Number of detected touch points
     static int16_t last_x = 0;  // 12bit pixel value
     static int16_t last_y = 0;  // 12bit pixel value
     uint8_t data_buf;
     uint8_t status_reg;
-    
-    
+    uint8_t buffer_status;
 
     gt911_i2c_read(gt911_status.i2c_dev_addr, GT911_STATUS_REG, &status_reg, 1);
-//    ESP_LOGI(TAG, "\tstatus: 0x%02x", status_reg);
-    touch_pnt_cnt = status_reg & 0x0F;
     
-    if ((status_reg & 0x80)) {
-        //Reset Status Reg Value
+    ESP_LOGI(TAG, "\tstatus: 0x%02x", status_reg);
+    touch_pnt_cnt = status_reg & 0x0F;
+
+    buffer_status = status_reg >> 7;
+    
+    ESP_LOGI(TAG, "\tBuffer Status %d", buffer_status );
+    
+    if(buffer_status == 1) {
         gt911_i2c_write8(gt911_status.i2c_dev_addr, GT911_STATUS_REG, 0x00);
-        ESP_LOGI(TAG, "\tReset");
     }
     
+    ESP_LOGI(TAG, "\tTouch Point count %d", touch_pnt_cnt );
     
     if (touch_pnt_cnt > 1) {    // ignore multi touch
         data->state = LV_INDEV_STATE_RELEASED;
@@ -190,6 +194,7 @@ bool gt911_read(lv_indev_drv_t *drv, lv_indev_data_t *data) {
     data->state = LV_INDEV_STATE_PRESSED;
     ESP_LOGI(TAG, "X=%u Y=%u", data->point.x, data->point.y);
     ESP_LOGV(TAG, "X=%u Y=%u", data->point.x, data->point.y);
+    
     gt911_i2c_write8(gt911_status.i2c_dev_addr, GT911_STATUS_REG, 0x00);
-    return true;
+    return false;
 }
