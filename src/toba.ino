@@ -1,4 +1,4 @@
 #include "Particle.h"
 #include <Arduino.h>
 
-#include lib
+#include "lib/lvgl/lvgl.h"
