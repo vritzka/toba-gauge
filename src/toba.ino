@@ -1,9 +1,6 @@
 #include "Particle.h"
 #include <Arduino.h>
-
 #include "lib/lvgl/lvgl.h"
-
-#include <lvgl.h>
 #include <TFT_eSPI.h>
 /*If you want to use the LVGL examples,
   make sure to install the lv_examples Arduino library
@@ -11,7 +8,7 @@
 #include <lv_examples.h>
 */
 
-#include <lv_demo.h>
+//#include <lv_demo.h>
 
 /*Change to your screen resolution*/
 static const uint16_t screenWidth  = 480;
@@ -103,8 +100,8 @@ void setup()
     static lv_disp_drv_t disp_drv;
     lv_disp_drv_init( &disp_drv );
     /*Change the following line to your display resolution*/
-    disp_drv.hor_res = screenWidth;
-    disp_drv.ver_res = screenHeight;
+    disp_drv.hor_res = 480;
+    disp_drv.ver_res = 320;
     disp_drv.flush_cb = my_disp_flush;
     disp_drv.draw_buf = &draw_buf;
     lv_disp_drv_register( &disp_drv );
@@ -128,7 +125,7 @@ void setup()
    */
 
     // uncomment one of these demos
-    lv_demo_widgets();            // OK
+    //lv_demo_widgets();            // OK
     // lv_demo_benchmark();          // OK
     // lv_demo_keypad_encoder();     // works, but I haven't an encoder
     // lv_demo_music();              // NOK
