@@ -8,7 +8,7 @@
 #include <lv_examples.h>
 */
 
-//#include <lv_demo.h>
+#include <lv_demo.h>
 
 /*Change to your screen resolution*/
 static const uint16_t screenWidth  = 480;
@@ -125,7 +125,7 @@ void setup()
    */
 
     // uncomment one of these demos
-    //lv_demo_widgets();            // OK
+    lv_demo_widgets();            // OK
     // lv_demo_benchmark();          // OK
     // lv_demo_keypad_encoder();     // works, but I haven't an encoder
     // lv_demo_music();              // NOK
