@@ -1,5 +1,4 @@
-#include "Particle.h"
-#include <Arduino.h>
+
 #include "lib/lvgl/lvgl.h"
 #include <TFT_eSPI.h>
 /*If you want to use the LVGL examples,
