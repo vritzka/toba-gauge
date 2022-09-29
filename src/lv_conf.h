@@ -2,7 +2,7 @@
  * @file lv_conf.h
  * Configuration file for v9.0.0-dev
  */
-
+#include "Particle.h"
 /*
  * Copy this file as `lv_conf.h`
  * 1. simply next to the `lvgl` folder
@@ -73,7 +73,7 @@
 
 /*Use a custom tick source that tells the elapsed time in milliseconds.
  *It removes the need to manually update the tick with `lv_tick_inc()`)*/
-#define LV_TICK_CUSTOM 1
+#define LV_TICK_CUSTOM 0
 #if LV_TICK_CUSTOM
     #define LV_TICK_CUSTOM_INCLUDE "Arduino.h"         /*Header for the system time function*/
     #define LV_TICK_CUSTOM_SYS_TIME_EXPR (millis())    /*Expression evaluating to current system time in ms*/
@@ -89,7 +89,7 @@
 
 /*Enable the built in mask engine.
  *Required to draw shadow, rounded corners, circles, arc, skew lines, or any other masks*/
-#define LV_USE_DRAW_MASKS 1
+#define LV_USE_DRAW_MASKS 0
 
 #define LV_USE_DRAW_SW  1
 #if LV_USE_DRAW_SW
